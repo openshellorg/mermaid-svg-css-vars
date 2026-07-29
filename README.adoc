@@ -1,0 +1,140 @@
+= mermaid-svg-css-vars
+:toc:
+:toclevels: 2
+
+Intermediate library that post-processes *Mermaid-rendered SVG* so one prerendered diagram works under host light/dark themes, and embeds cleanly on the web.
+
+Package: `@openshellorg/mermaid-svg-css-vars`
+
+== Why this exists
+
+Mermaid derives theme colors with *khroma* (`lighten` / `adjust` / `darken` / `invert`) from *concrete* color values. That means:
+
+[source,js]
+----
+// This cannot work fully at render time:
+mermaid.initialize({
+  themeVariables: { primaryColor: 'var(--brand-primary)' }
+});
+----
+
+khroma cannot lighten a CSS custom property. Upstream asks to *accept* CSS vars as themeVariable *inputs* (see https://github.com/mermaid-js/mermaid/issues/6860[#6860]) are related but *insufficient* for build-time prerender. Sanitizer discussions (#6256 / #6261) are a different problem.
+
+The correct intermediate (this package, and the matching Mermaid emit mode) is:
+
+. Render with concrete `themeVariables` (khroma happy).
+. Rewrite emitted SVG colors to `var(--mermaid-primaryColor, #resolvedFallback)`.
+. Let the host theme override `--mermaid-*` without re-rendering.
+
+== API
+
+[source,ts]
+----
+import {
+  rewriteMermaidSvgCssVars,
+  normalizeMermaidSvgForWeb,
+  prepareMermaidSvgForWeb,
+} from '@openshellorg/mermaid-svg-css-vars';
+
+const themeVariables = {
+  primaryColor: '#ECECFF',
+  primaryTextColor: '#333333',
+  lineColor: '#333333',
+  // …full Mermaid themeVariables object used at render time
+};
+
+// 1) CSS vars only
+const themed = rewriteMermaidSvgCssVars(svg, themeVariables, {
+  prefix: '--mermaid-',
+  // varMap: { primaryColor: 'node-fill' },
+});
+
+// 2) Web embedding only
+const responsive = normalizeMermaidSvgForWeb(svg, {
+  responsiveWidth: true,
+  responsiveHeight: true,
+  ensureViewBox: true,
+  stripBackground: true,
+});
+
+// 3) Combined (recommended build step)
+const ready = prepareMermaidSvgForWeb(svg, {
+  themeVariables,
+  cssVariables: true,
+  webCompatibility: true,
+  prefix: '--mermaid-',
+});
+----
+
+=== `webCompatibility` behavior
+
+When enabled (default in `prepareMermaidSvgForWeb`):
+
+* Derive `viewBox` from numeric `width`/`height` when `viewBox` is missing.
+* Set `width="100%"` and `height="auto"` so the SVG scales with the host layout while aspect ratio stays stable via `viewBox`.
+* Set `preserveAspectRatio="xMidYMid meet"` when missing.
+* Strip hardcoded root/background paint that fights host light/dark themes.
+
+=== Host CSS example
+
+[source,css]
+----
+:root {
+  --mermaid-primaryColor: #ECECFF;
+  --mermaid-primaryTextColor: #333;
+  --mermaid-lineColor: #333;
+}
+[data-theme="dark"] {
+  --mermaid-primaryColor: #2a2a4a;
+  --mermaid-primaryTextColor: #eee;
+  --mermaid-lineColor: #ccc;
+}
+----
+
+== CLI
+
+Build the package (`pnpm build`), then:
+
+[source,bash]
+----
+# After mmdc / mermaid CLI
+mmdc -i diagram.mmd -o diagram.svg -c mermaid-config.json
+mermaid-svg-css-vars diagram.svg -o diagram.web.svg --theme-vars theme.json
+----
+
+`theme.json` must be the *same concrete themeVariables* used for the render (or the resolved object Mermaid computed).
+
+Useful flags: `--no-css-variables`, `--no-web-compatibility`, `--prefix`, `--no-strip-background`.
+
+== Consuming from docs sites (DevCentr / OpenShellOrg)
+
+Typical Antora / static-docs pipeline:
+
+. Prerender `.mmd` → `.svg` with `mmdc` (concrete theme).
+. Run `mermaid-svg-css-vars` (or call `prepareMermaidSvgForWeb` from a Node build script).
+. Ship the SVG as a static asset; define `--mermaid-*` in the site UI theme CSS.
+
+You do *not* need to rewrite every hand-authored SVG already in the tree—only Mermaid-prerendered output benefits from the color rewrite. Hand SVGs can still use `normalizeMermaidSvgForWeb` if you want responsive `viewBox`/`width` normalization.
+
+== Relation to Mermaid core
+
+Upstream should eventually emit `var(--mermaid-<slot>, <resolved>)` itself (`cssVariableTheme`) and offer a `webCompatibility` render option. Until that lands, this package is the build-step stripper. The Mermaid fork mirrors this logic in a small internal module (no hard dependency on this package).
+
+== Install
+
+[source,bash]
+----
+pnpm add @openshellorg/mermaid-svg-css-vars
+----
+
+== Develop
+
+[source,bash]
+----
+pnpm install
+pnpm test
+----
+
+== License
+
+MIT

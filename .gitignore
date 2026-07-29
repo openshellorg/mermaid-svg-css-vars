@@ -1,0 +1,17 @@
+*
+!.gitignore
+!README.adoc
+!README.md
+!CHANGELOG.adoc
+!LICENSE
+!package.json
+!pnpm-lock.yaml
+!tsconfig.json
+!src/
+!src/**
+!test/
+!test/**
+!bin/
+!bin/**
+!examples/
+!examples/**

@@ -1,0 +1,56 @@
+{
+  "name": "@openshellorg/mermaid-svg-css-vars",
+  "version": "0.1.0",
+  "description": "Rewrite Mermaid-rendered SVG theme colors to CSS custom properties with fallbacks, plus web-embedding normalization.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Open Shell Organization",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openshellorg/mermaid-svg-css-vars.git"
+  },
+  "homepage": "https://github.com/openshellorg/mermaid-svg-css-vars#readme",
+  "bugs": {
+    "url": "https://github.com/openshellorg/mermaid-svg-css-vars/issues"
+  },
+  "keywords": [
+    "mermaid",
+    "svg",
+    "css-variables",
+    "theme",
+    "dark-mode",
+    "prerender",
+    "mmdc"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "mermaid-svg-css-vars": "./bin/mermaid-svg-css-vars.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.adoc",
+    "CHANGELOG.adoc",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm run build && node --test dist/test/normalize.test.js dist/test/prepare.test.js",
+    "prepublishOnly": "pnpm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@10.11.0"
+}

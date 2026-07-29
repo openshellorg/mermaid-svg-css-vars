@@ -1,0 +1,7 @@
+= Changelog
+
+== 0.1.0 (2026-07-29)
+
+* Initial release: `rewriteMermaidSvgCssVars`, `normalizeMermaidSvgForWeb`, `prepareMermaidSvgForWeb`.
+* CLI `mermaid-svg-css-vars` for mmdc / Mermaid CLI post-processing.
+* Docs: why CSS-var *inputs* to Mermaid themeVariables cannot work (khroma derivation); webCompatibility behavior.
