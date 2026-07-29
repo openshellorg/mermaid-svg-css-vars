@@ -22,12 +22,12 @@
     "prerender",
     "mmdc"
   ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
     }
   },
   "bin": {
@@ -42,6 +42,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
     "test": "pnpm run build && node --test dist/test/normalize.test.js dist/test/prepare.test.js",
     "prepublishOnly": "pnpm run build"
   },
