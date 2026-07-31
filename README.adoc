@@ -125,7 +125,10 @@ Upstream should eventually emit `var(--mermaid-<slot>, <resolved>)` itself (`css
 [source,bash]
 ----
 pnpm add @openshellorg/mermaid-svg-css-vars
+# until npm publish: pnpm add github:openshellorg/mermaid-svg-css-vars
 ----
+
+Package is on GitHub; npm `@openshellorg` publish is optional for consumers that prefer the registry over a git dependency.
 
 == Develop
 
