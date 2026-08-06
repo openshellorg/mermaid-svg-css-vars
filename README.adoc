@@ -1,32 +1,48 @@
-= mermaid-svg-css-vars
-:toc:
+ifndef::env-github[:icons: font]
+:toc: preamble
 :toclevels: 2
+:sectanchors:
+
+ifndef::env-github[]
+image:https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Contributors,link=https://github.com/openshellorg/mermaid-svg-css-vars/graphs/contributors]
+image:https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Forks,link=https://github.com/openshellorg/mermaid-svg-css-vars/network/members]
+image:https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Stars,link=https://github.com/openshellorg/mermaid-svg-css-vars/stargazers]
+image:https://img.shields.io/github/issues/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Issues,link=https://github.com/openshellorg/mermaid-svg-css-vars/issues]
+image:https://img.shields.io/github/license/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[License,link=https://github.com/openshellorg/mermaid-svg-css-vars/blob/main/LICENSE]
+endif::[]
+
+ifdef::env-github[]
+image:https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Contributors]
+image:https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Forks]
+image:https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Stars]
+image:https://img.shields.io/github/issues/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Issues]
+image:https://img.shields.io/github/license/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[License]
+endif::[]
+
+= mermaid-svg-css-vars
+
+Post-process Mermaid SVG: theme colors to CSS vars with fallbacks + webCompatibility normalization.
+
+link:https://github.com/openshellorg/mermaid-svg-css-vars/issues[Report Bug] ·
+link:https://github.com/openshellorg/mermaid-svg-css-vars/issues[Request Feature]
+
+== About The Project
 
 Intermediate library that post-processes *Mermaid-rendered SVG* so one prerendered diagram works under host light/dark themes, and embeds cleanly on the web.
 
 Package: `@openshellorg/mermaid-svg-css-vars`
 
-== Why this exists
+Mermaid derives theme colors with *khroma* from *concrete* color values — CSS custom properties cannot be used at render time. This package rewrites emitted SVG colors to `var(--mermaid-primaryColor, #resolvedFallback)` so the host theme can override without re-rendering.
 
-Mermaid derives theme colors with *khroma* (`lighten` / `adjust` / `darken` / `invert`) from *concrete* color values. That means:
+== Installation
 
-[source,js]
+[source,bash]
 ----
-// This cannot work fully at render time:
-mermaid.initialize({
-  themeVariables: { primaryColor: 'var(--brand-primary)' }
-});
+pnpm add @openshellorg/mermaid-svg-css-vars
+# until npm publish: pnpm add github:openshellorg/mermaid-svg-css-vars
 ----
 
-khroma cannot lighten a CSS custom property. Upstream asks to *accept* CSS vars as themeVariable *inputs* (see https://github.com/mermaid-js/mermaid/issues/6860[#6860]) are related but *insufficient* for build-time prerender. Sanitizer discussions (#6256 / #6261) are a different problem.
-
-The correct intermediate (this package, and the matching Mermaid emit mode) is:
-
-. Render with concrete `themeVariables` (khroma happy).
-. Rewrite emitted SVG colors to `var(--mermaid-primaryColor, #resolvedFallback)`.
-. Let the host theme override `--mermaid-*` without re-rendering.
-
-== API
+== Usage
 
 [source,ts]
 ----
@@ -36,28 +52,6 @@ import {
   prepareMermaidSvgForWeb,
 } from '@openshellorg/mermaid-svg-css-vars';
 
-const themeVariables = {
-  primaryColor: '#ECECFF',
-  primaryTextColor: '#333333',
-  lineColor: '#333333',
-  // …full Mermaid themeVariables object used at render time
-};
-
-// 1) CSS vars only
-const themed = rewriteMermaidSvgCssVars(svg, themeVariables, {
-  prefix: '--mermaid-',
-  // varMap: { primaryColor: 'node-fill' },
-});
-
-// 2) Web embedding only
-const responsive = normalizeMermaidSvgForWeb(svg, {
-  responsiveWidth: true,
-  responsiveHeight: true,
-  ensureViewBox: true,
-  stripBackground: true,
-});
-
-// 3) Combined (recommended build step)
 const ready = prepareMermaidSvgForWeb(svg, {
   themeVariables,
   cssVariables: true,
@@ -66,14 +60,13 @@ const ready = prepareMermaidSvgForWeb(svg, {
 });
 ----
 
-=== `webCompatibility` behavior
+=== CLI
 
-When enabled (default in `prepareMermaidSvgForWeb`):
-
-* Derive `viewBox` from numeric `width`/`height` when `viewBox` is missing.
-* Set `width="100%"` and `height="auto"` so the SVG scales with the host layout while aspect ratio stays stable via `viewBox`.
-* Set `preserveAspectRatio="xMidYMid meet"` when missing.
-* Strip hardcoded root/background paint that fights host light/dark themes.
+[source,bash]
+----
+mmdc -i diagram.mmd -o diagram.svg -c mermaid-config.json
+mermaid-svg-css-vars diagram.svg -o diagram.web.svg --theme-vars theme.json
+----
 
 === Host CSS example
 
@@ -82,53 +75,12 @@ When enabled (default in `prepareMermaidSvgForWeb`):
 :root {
   --mermaid-primaryColor: #ECECFF;
   --mermaid-primaryTextColor: #333;
-  --mermaid-lineColor: #333;
 }
 [data-theme="dark"] {
   --mermaid-primaryColor: #2a2a4a;
   --mermaid-primaryTextColor: #eee;
-  --mermaid-lineColor: #ccc;
 }
 ----
-
-== CLI
-
-Build the package (`pnpm build`), then:
-
-[source,bash]
-----
-# After mmdc / mermaid CLI
-mmdc -i diagram.mmd -o diagram.svg -c mermaid-config.json
-mermaid-svg-css-vars diagram.svg -o diagram.web.svg --theme-vars theme.json
-----
-
-`theme.json` must be the *same concrete themeVariables* used for the render (or the resolved object Mermaid computed).
-
-Useful flags: `--no-css-variables`, `--no-web-compatibility`, `--prefix`, `--no-strip-background`.
-
-== Consuming from docs sites (DevCentr / OpenShellOrg)
-
-Typical Antora / static-docs pipeline:
-
-. Prerender `.mmd` → `.svg` with `mmdc` (concrete theme).
-. Run `mermaid-svg-css-vars` (or call `prepareMermaidSvgForWeb` from a Node build script).
-. Ship the SVG as a static asset; define `--mermaid-*` in the site UI theme CSS.
-
-You do *not* need to rewrite every hand-authored SVG already in the tree—only Mermaid-prerendered output benefits from the color rewrite. Hand SVGs can still use `normalizeMermaidSvgForWeb` if you want responsive `viewBox`/`width` normalization.
-
-== Relation to Mermaid core
-
-Upstream should eventually emit `var(--mermaid-<slot>, <resolved>)` itself (`cssVariableTheme`) and offer a `webCompatibility` render option. Until that lands, this package is the build-step stripper. The Mermaid fork mirrors this logic in a small internal module (no hard dependency on this package).
-
-== Install
-
-[source,bash]
-----
-pnpm add @openshellorg/mermaid-svg-css-vars
-# until npm publish: pnpm add github:openshellorg/mermaid-svg-css-vars
-----
-
-Package is on GitHub; npm `@openshellorg` publish is optional for consumers that prefer the registry over a git dependency.
 
 == Develop
 
@@ -140,4 +92,11 @@ pnpm test
 
 == License
 
-MIT
+MIT — see link:LICENSE[LICENSE].
+
+== Contact
+
+Open Shell Org — openshell@devcentr.org
+
+* Project: https://github.com/openshellorg/mermaid-svg-css-vars
+* Site: https://openshellorg.github.io
