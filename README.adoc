@@ -3,21 +3,12 @@ ifndef::env-github[:icons: font]
 :toclevels: 2
 :sectanchors:
 
-ifndef::env-github[]
+[[readme-top]]
 image:https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Contributors,link=https://github.com/openshellorg/mermaid-svg-css-vars/graphs/contributors]
 image:https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Forks,link=https://github.com/openshellorg/mermaid-svg-css-vars/network/members]
 image:https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Stars,link=https://github.com/openshellorg/mermaid-svg-css-vars/stargazers]
 image:https://img.shields.io/github/issues/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Issues,link=https://github.com/openshellorg/mermaid-svg-css-vars/issues]
 image:https://img.shields.io/github/license/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[License,link=https://github.com/openshellorg/mermaid-svg-css-vars/blob/main/LICENSE]
-endif::[]
-
-ifdef::env-github[]
-image:https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Contributors]
-image:https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Forks]
-image:https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Stars]
-image:https://img.shields.io/github/issues/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Issues]
-image:https://img.shields.io/github/license/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[License]
-endif::[]
 
 = mermaid-svg-css-vars
 
@@ -34,6 +25,8 @@ Package: `@openshellorg/mermaid-svg-css-vars`
 
 Mermaid derives theme colors with *khroma* from *concrete* color values — CSS custom properties cannot be used at render time. This package rewrites emitted SVG colors to `var(--mermaid-primaryColor, #resolvedFallback)` so the host theme can override without re-rendering.
 
+link:#readme-top[back to top]
+
 == Installation
 
 [source,bash]
@@ -41,6 +34,8 @@ Mermaid derives theme colors with *khroma* from *concrete* color values — CSS 
 pnpm add @openshellorg/mermaid-svg-css-vars
 # until npm publish: pnpm add github:openshellorg/mermaid-svg-css-vars
 ----
+
+link:#readme-top[back to top]
 
 == Usage
 
@@ -82,6 +77,8 @@ mermaid-svg-css-vars diagram.svg -o diagram.web.svg --theme-vars theme.json
 }
 ----
 
+link:#readme-top[back to top]
+
 == Develop
 
 [source,bash]
@@ -94,9 +91,13 @@ pnpm test
 
 MIT — see link:LICENSE[LICENSE].
 
+link:#readme-top[back to top]
+
 == Contact
 
 Open Shell Org — openshell@devcentr.org
 
 * Project: https://github.com/openshellorg/mermaid-svg-css-vars
 * Site: https://openshellorg.github.io
+
+link:#readme-top[back to top]
