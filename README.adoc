@@ -3,7 +3,28 @@ ifndef::env-github[:icons: font]
 :toclevels: 2
 :sectanchors:
 
-[[readme-top]]
+ifdef::env-github[]
+++++
+<a id="readme-top"></a>
+<div align="center">
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/graphs/contributors"><img src="https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge" alt="Contributors"></a>
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/network/members"><img src="https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge" alt="Forks"></a>
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/stargazers"><img src="https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge" alt="Stars"></a>
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/issues"><img src="https://img.shields.io/github/issues/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge" alt="Issues"></a>
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/blob/main/LICENSE"><img src="https://img.shields.io/github/license/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge" alt="License"></a>
+<br />
+<h3 align="center">mermaid-svg-css-vars</h3>
+<p align="center">
+Post-process Mermaid SVG: theme colors to CSS vars with fallbacks + webCompatibility normalization.<br />
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/issues">Report Bug</a>
+&middot;
+<a href="https://github.com/openshellorg/mermaid-svg-css-vars/issues">Request Feature</a>
+</p>
+</div>
+++++
+endif::[]
+
+ifndef::env-github[]
 image:https://img.shields.io/github/contributors/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Contributors,link=https://github.com/openshellorg/mermaid-svg-css-vars/graphs/contributors]
 image:https://img.shields.io/github/forks/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Forks,link=https://github.com/openshellorg/mermaid-svg-css-vars/network/members]
 image:https://img.shields.io/github/stars/openshellorg/mermaid-svg-css-vars.svg?style=for-the-badge[Stars,link=https://github.com/openshellorg/mermaid-svg-css-vars/stargazers]
@@ -16,6 +37,7 @@ Post-process Mermaid SVG: theme colors to CSS vars with fallbacks + webCompatibi
 
 link:https://github.com/openshellorg/mermaid-svg-css-vars/issues[Report Bug] ·
 link:https://github.com/openshellorg/mermaid-svg-css-vars/issues[Request Feature]
+endif::[]
 
 == About The Project
 
@@ -25,8 +47,9 @@ Package: `@openshellorg/mermaid-svg-css-vars`
 
 Mermaid derives theme colors with *khroma* from *concrete* color values — CSS custom properties cannot be used at render time. This package rewrites emitted SVG colors to `var(--mermaid-primaryColor, #resolvedFallback)` so the host theme can override without re-rendering.
 
-link:#readme-top[back to top]
-
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
 == Installation
 
 [source,bash]
@@ -35,8 +58,9 @@ pnpm add @openshellorg/mermaid-svg-css-vars
 # until npm publish: pnpm add github:openshellorg/mermaid-svg-css-vars
 ----
 
-link:#readme-top[back to top]
-
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
 == Usage
 
 [source,ts]
@@ -77,8 +101,9 @@ mermaid-svg-css-vars diagram.svg -o diagram.web.svg --theme-vars theme.json
 }
 ----
 
-link:#readme-top[back to top]
-
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
 == Develop
 
 [source,bash]
@@ -91,8 +116,9 @@ pnpm test
 
 MIT — see link:LICENSE[LICENSE].
 
-link:#readme-top[back to top]
-
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
 == Contact
 
 Open Shell Org — openshell@devcentr.org
@@ -100,4 +126,6 @@ Open Shell Org — openshell@devcentr.org
 * Project: https://github.com/openshellorg/mermaid-svg-css-vars
 * Site: https://openshellorg.github.io
 
-link:#readme-top[back to top]
+++++
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+++++
